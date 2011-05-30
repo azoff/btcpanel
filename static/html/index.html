@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <title>BTC Panel</title>       
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />     
+        <meta name="author" content="Jonathan Azoff">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="A web interface for Bitcoin wallet monitoring and exchanges">
+        <link rel="shortcut icon" href="/static/img/favicon.ico">
+		<link rel="stylesheet" media="screen,projection" href="/static/css/index.css">
+		<script src='/static/js/head.min.js'></script>
+    </head>
+    <body>
+		<section id="status"></section>
+		<form id="login" class="panel">
+			<header>Your Mt.Gox Credentials</header>
+			<a href="https://mtgox.com/">Mt.Gox Homepage</a>
+			<fieldset>
+				<label for="mg_user">Username</label>
+				<input type="text" id="mg_user" name="mg_user" placeholder="Your Username..." />
+			</fieldset>
+			<fieldset>
+				<label for="mg_user">Password</label>
+				<input type="password" id="mg_pass" name="mg_pass" placeholder="Your Password..." />
+			</fieldset>
+			
+			<header>Your Bitcoin Server</header>
+			<a href="https://en.bitcoin.it/wiki/API_reference_(JSON-RPC)">Bitcoin Server Documentation</a>
+			<fieldset>
+				<label for="bs_host">RPC Hostname</label>
+				<input type="text" id="bs_host" name="bs_host" placeholder="my-server.com" />
+			</fieldset>	
+			<fieldset>
+				<label for="bs_host">RPC Port</label>
+				<input type="text" id="bs_port" name="bs_port" placeholder="8332" value="8332" />
+			</fieldset>		
+			<fieldset>
+				<label for="bs_user">Username</label>
+				<input type="text" id="bs_user" name="bs_user" placeholder="Your Username..." />
+			</fieldset>
+			<fieldset>
+				<label for="bs_pass">Password</label>
+				<input type="password" id="bs_pass" name="bs_pass" placeholder="Your Password..." />
+			</fieldset>
+			
+			<fieldset>
+				<input type="submit" value="Log In" />
+			</fieldset>
+		</form>
+		<section id="wallet" class="panel">WALLET</section>
+		<section id="exchange" class="panel">EXCHANGE</section>
+		<script>head.js(
+			"http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js",
+			"/static/js/index.js"
+		);</script>
+    </body>
+</html>
