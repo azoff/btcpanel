@@ -14,22 +14,12 @@
     <body>
 		<section id="status"></section>
 		<form id="login" class="panel">
-			<header>Your Mt.Gox Credentials</header>
-			<a href="https://mtgox.com/">Mt.Gox Homepage</a>
-			<fieldset>
-				<label for="mg_user">Username</label>
-				<input type="text" id="mg_user" name="mg_user" placeholder="Your Username..." />
-			</fieldset>
-			<fieldset>
-				<label for="mg_user">Password</label>
-				<input type="password" id="mg_pass" name="mg_pass" placeholder="Your Password..." />
-			</fieldset>
 			
 			<header>Your Bitcoin Server</header>
 			<a href="https://en.bitcoin.it/wiki/API_reference_(JSON-RPC)">Bitcoin Server Documentation</a>
 			<fieldset>
 				<label for="bs_host">RPC Hostname</label>
-				<input type="text" id="bs_host" name="bs_host" placeholder="my-server.com" />
+				<input type="text" id="bs_host" name="bs_host" placeholder="my-server.com" value="127.0.0.1" />
 			</fieldset>	
 			<fieldset>
 				<label for="bs_host">RPC Port</label>
@@ -37,19 +27,53 @@
 			</fieldset>		
 			<fieldset>
 				<label for="bs_user">Username</label>
-				<input type="text" id="bs_user" name="bs_user" placeholder="Your Username..." />
+				<input type="text" id="bs_user" name="bs_user" placeholder="Your Username..." value="azoff" />
 			</fieldset>
 			<fieldset>
 				<label for="bs_pass">Password</label>
-				<input type="password" id="bs_pass" name="bs_pass" placeholder="Your Password..." />
+				<input type="password" id="bs_pass" name="bs_pass" placeholder="Your Password..." value="az1340" />
+			</fieldset>
+
+			<header>Your Mt.Gox Credentials</header>
+			<a href="https://mtgox.com/">Mt.Gox Homepage</a>
+			<fieldset>
+				<label for="mg_user">Username</label>
+				<input type="text" id="mg_user" name="mg_user" placeholder="Your Username..." value="azoff" />
+			</fieldset>
+			<fieldset>
+				<label for="mg_user">Password</label>
+				<input type="password" id="mg_pass" name="mg_pass" placeholder="Your Password..." value="win4EVER!" />
 			</fieldset>
 			
 			<fieldset>
 				<input type="submit" value="Log In" />
 			</fieldset>
+			
 		</form>
-		<section id="wallet" class="panel">WALLET</section>
-		<section id="exchange" class="panel">EXCHANGE</section>
+		<section id="exchange" class="panel">
+			<header>Mt. Gox Exchange</header>
+			<div class="ticker">
+				<span class="ticker-label">&nbsp;BUY</span>
+				<span id="ticker_buy" class="ticker-value">
+					<strong>--</strong> USD
+				</span>
+			</div>
+			<div class="ticker">
+				<span class="ticker-label">SELL</span>
+				<span id="ticker_sell" class="ticker-value">
+					<strong>--</strong> USD
+				</span>
+			</div>
+			<div class="ticker">
+				<span class="ticker-label">&nbsp;VOL</span>
+				<span id="ticker_vol" class="ticker-value">
+					<strong>--</strong> BTC
+				</span>
+			</div>			
+		</section>
+		<section id="wallet" class="panel">
+			<header>Your Wallet</header>
+		</section>		
 		<script>head.js(
 			"http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js",
 			"/static/js/index.js"

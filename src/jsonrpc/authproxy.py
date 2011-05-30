@@ -39,6 +39,7 @@ import base64
 import simplejson
 import decimal
 import urlparse
+import logging
 from google.appengine.api.urlfetch import DownloadError 
 
 USER_AGENT = "AuthServiceProxy/0.1"
@@ -52,6 +53,7 @@ class JSONRPCException(Exception):
 
 class AuthServiceProxy(object):
 	def __init__(self, serviceURL, serviceName=None):
+		logging.error(serviceURL)
 		self.__serviceURL = serviceURL
 		self.__serviceName = serviceName
 		self.__url = urlparse.urlparse(serviceURL)
@@ -88,8 +90,12 @@ class AuthServiceProxy(object):
 			
 		if httpresp is None:
 			return { 'error': 'Missing HTTP response from server.' }
-		
-		resp = simplejson.loads(httpresp.read(), parse_float=decimal.Decimal)
+		resp = None
+		try:
+			resp = simplejson.loads(httpresp.read(), parse_float=decimal.Decimal)
+		except(simplejson.JSONDecodeError):
+			return { 'error': 'Invalid or missing response.' }
+			
 		if resp['error'] != None:
 			return { 'error': resp['error'] }
 		elif 'result' not in resp:

@@ -25,10 +25,6 @@
 			.addClass('active');
 	}
 	
-	function loadModel(session, callback) {
-		$.post('/api/model', { session: session }, callback);
-	}
-	
 	function loadSession(data, callback) {
 		$.post('/api/session', data, callback);
 	}	
@@ -37,17 +33,39 @@
 		return (global.location.hash || '').replace('#', '');
 	}
 	
-	function applyModel(status) {
+	function applyTicker(status){
 		if (!status.error) {
-			
-		} else {
-			updateStatus('error', status.error);
+			var tickers = find(".ticker-value").removeClass('bull bear'),
+				buy = parseFloat(status.buy, 10),
+				sell = parseFloat(status.sell, 10),
+				last = parseFloat(status.last, 10), 
+				vol = parseFloat(status.vol, 10),
+				low = parseFloat(status.low, 10), 
+				high = parseFloat(status.high, 10),
+				className = buy > last ? 'bull' : 'bear';
+			if (buy !== last) { tickers.addClass(className); }
+			tickers.filter('#ticker_buy').data('low', low).find('strong').text(buy);
+			tickers.filter('#ticker_sell').data('high', high).find('strong').text(sell);
+			tickers.filter('#ticker_vol').find('strong').text(vol);
 		}
+	}
+	
+	function loadTicker(callback) {
+		$.post('/api/ticker', callback);
+	}
+	
+	function loopTicker() {
+		loadTicker(function(status){
+			applyTicker(status);
+			setTimeout(loopTicker, 5000);
+		});
 	}
 	
 	function applySession(status) {
 		if (!status.error) {
 			updateStatus('success', 'Connection Successful');
+			togglePanels('#wallet, #exchange');
+			loopTicker();
 		} else {
 			updateStatus('error', status.error);
 		}
@@ -64,19 +82,10 @@
 		find('#login').submit(onLogin);
 	}
 	
-	function checkState() {
-		var session = getSession();		
-		if (session) {
-			loadModel(session, applyModel);
-		} else {
-			updateStatus('notice', 'Please Log In.');
-			togglePanels('#login');
-		}
-	}
-	
 	function onReady() {
 		attachDelegates();
-		checkState();
+		updateStatus('notice', 'Please Log In.');
+		togglePanels('#login');
 	}
 	
 	loader.ready(onReady);
