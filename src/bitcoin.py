@@ -18,7 +18,7 @@ class BitcoinRpcProxy():
 			for accountName in accountNames:
 				response.append({
 					'label': accountName,
-					'balanace': self._toFloat(accounts[accountName]) 
+					'balance': self._toFloat(accounts[accountName]) 
 				})
 			return response
 			

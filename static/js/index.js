@@ -91,11 +91,20 @@
 		find('#fund_btc .potential').data('balance', btcs);
 	}
 	
+	function applyRPC(status) {
+		var accounts = find('#accounts').empty();
+		$.each(status, function(i, data) {
+			var account = $('<div class="fund"><small>' + data.label + '</small><span>&nbsp;Balance (Q): <strong class="balance">' + moneyFormat(data.balance) + '</strong> BTC&nbsp;</span><span>&nbsp;&nbsp;&nbsp;&nbsp;Sells At: <strong class="potential sell-potential">--</strong> USD&nbsp;</span></div>').appendTo(accounts);
+			account.find('.potential').data('balance', data.balance);
+		});
+	}
+	
 	function applySession(status) {
 		if (!status.error) {
 			updateStatus('success', 'Connection Successful');
 			togglePanels('#wallet, #exchange');
-			applyFunds(status.accounts.mg);
+			applyRPC(status.accounts.rpc);
+			applyFunds(status.accounts.mg);			
 			loopTicker();
 		} else {
 			updateStatus('error', status.error);

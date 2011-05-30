@@ -53,18 +53,23 @@
 		<section id="exchange" class="panel">
 			<header>Mt. Gox Exchange</header>
 			<div class="ticker">
-				<span class="ticker-label">&nbsp;BUY</span><span id="ticker_buy" class="ticker-value">
-					<strong>--</strong> USD
+				<span class="ticker-label">&nbsp;BUY</span><span id="ticker_buy" class="ticker-value"><strong>--</strong> USD
 				</span>
 			</div>
 			<div class="ticker">
-				<span class="ticker-label">SELL</span><span id="ticker_sell" class="ticker-value">
-					<strong>--</strong> USD
+				<span class="ticker-label">SELL</span><span id="ticker_sell" class="ticker-value"><strong>--</strong> USD
 				</span>
 			</div>
 			<div class="ticker">
-				<span class="ticker-label">&nbsp;VOL</span><span id="ticker_vol" class="ticker-value">
-					<strong>--</strong> BTC
+				<span class="ticker-label">HIGH</span><span id="ticker_high" class="ticker-value"><strong>--</strong> USD
+				</span>
+			</div>
+			<div class="ticker">
+				<span class="ticker-label">&nbsp;LOW</span><span id="ticker_low" class="ticker-value"><strong>--</strong> USD
+				</span>
+			</div>						
+			<div class="ticker">
+				<span class="ticker-label">&nbsp;VOL</span><span id="ticker_vol" class="ticker-value"><strong>--</strong> BTC
 				</span>
 			</div>
 			<header>Investable Funds</header>
@@ -83,7 +88,7 @@
 		</section>
 		<section id="wallet" class="panel">
 			<header>Wallet Receiving Accounts</header>
-			<div class="accounts"></div>
+			<div id="accounts" class="funds"></div>
 		</section>		
 		<script>head.js(
 			"http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js",

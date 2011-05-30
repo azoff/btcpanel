@@ -6,18 +6,18 @@ input[type=text], input[type=password] { display: block; border: none 0; color: 
 .panel { display: none; padding: 0 0.8em; }
 .panel.active { display: block; }
 
-#exchange header { margin-bottom: 0.5em; }
+.funds { overflow: hidden; }
+.fund { margin: 0 0.5em 0.8em; font-size: 1.2em; font: 1.4em Courier, Mono; float: left; clear: both; }
+.fund span { display: block; background-color: #555; }
+.fund small { display: block; background-color: #333; padding-left: 0.5em; }
+
+#wallet header, #exchange header { margin-bottom: 0.5em; }
 
 #exchange .ticker { font: 1.4em Courier, Mono; padding: 0 0.5em; }
 #exchange .ticker-label { padding: 0 0.5em; color: #999; background-color: #333; }
 #exchange .ticker-value { padding: 0 0.5em; }
 #exchange .ticker-value.bull { background-color: green; }
 #exchange .ticker-value.bear { background-color: red; }
-
-#exchange .funds { overflow: hidden; }
-#exchange .fund { margin-bottom: 0.8em; font-size: 1.2em; font: 1.4em Courier, Mono; float: left; clear: both; }
-#exchange .fund span { display: block; background-color: #555; }
-#exchange .fund small { display: block; background-color: #333; padding-left: 0.5em; }
 
 #status { padding: 0.5em 0.8em; font-size: 1.4em; }
 #status.error { background-color: red; color: white; }
