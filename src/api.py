@@ -2,7 +2,7 @@ from django.utils import simplejson
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 from src.mtgox import MtGoxAccount
-from src.jsonrpc import ServiceProxy
+from src.bitcoin import BitcoinRpcProxy
 import config, logging
 
 class ApiRequestHandler(webapp.RequestHandler):
@@ -40,23 +40,28 @@ class ApiRequestHandler(webapp.RequestHandler):
 	def session(self):
 		mgUser = self.arg('mg_user')
 		mgPass = self.arg('mg_pass')
-		bsUser = self.arg('bs_user')
-		bsPass = self.arg('bs_pass')
-		bsHost  = self.arg('bs_host')
-		bsPort  = self.arg('bs_port')
-		if  len(mgUser) > 0 and len(mgPass) > 0 and len(bsUser) > 0 and len(bsPass) > 0 and len(bsHost) > 0 and len(bsPort) > 0:
-			mgBalance = MtGoxAccount(mgUser, mgPass).getFunds()
-			if ('error' in mgBalance):
-				logging.error(mgBalance['error'])
+		rpcUser = self.arg('rpc_user')
+		rpcPass = self.arg('rpc_pass')
+		rpcHost  = self.arg('rpc_host')
+		rpcPort  = self.arg('rpc_port')
+		if  len(mgUser) > 0 and len(mgPass) > 0 and len(rpcUser) > 0 and len(rpcPass) > 0 and len(rpcHost) > 0 and len(rpcPort) > 0:
+			mgFunds = MtGoxAccount(mgUser, mgPass).getFunds()
+			if ('error' in mgFunds):
+				logging.error(mgFunds['error'])
 				self.respond({ 'error': 'Login Rejected: Mt. Gox Servers.' })
 			else:
-				proxy = ServiceProxy("http://%s:%s@%s:%s" % (bsUser, bsPass, bsHost, bsPort))
-				bsInfo = proxy.getinfo()
-				if ('error' in bsInfo):
-					logging.error(bsInfo['error'])
+				proxy = BitcoinRpcProxy(rpcUser, rpcPass, rpcHost, rpcPort)
+				rpcAccounts = proxy.listAccounts() 
+				if ('error' in rpcAccounts):
+					logging.error(rpcAccounts['error'])
 					self.respond({ 'error': 'Login Rejected: RPC Server.' })
 				else:
-					self.respond({})
+					self.respond({
+						'accounts': {
+							'rpc': rpcAccounts,
+							'mg': mgFunds
+						}
+					})
 		else:
 			self.respond({ 'error': 'Missing one or more parameters.' })
 

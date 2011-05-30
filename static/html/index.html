@@ -15,23 +15,23 @@
 		<section id="status"></section>
 		<form id="login" class="panel">
 			
-			<header>Your Bitcoin Server</header>
+			<header>Your Bitcoin RPC Server</header>
 			<a href="https://en.bitcoin.it/wiki/API_reference_(JSON-RPC)">Bitcoin Server Documentation</a>
 			<fieldset>
-				<label for="bs_host">RPC Hostname</label>
-				<input type="text" id="bs_host" name="bs_host" placeholder="my-server.com" value="127.0.0.1" />
+				<label for="rpc_host">RPC Hostname</label>
+				<input type="text" id="rpc_host" name="rpc_host" placeholder="my-server.com" value="127.0.0.1" />
 			</fieldset>	
 			<fieldset>
-				<label for="bs_host">RPC Port</label>
-				<input type="text" id="bs_port" name="bs_port" placeholder="8332" value="8332" />
+				<label for="rpc_host">RPC Port</label>
+				<input type="text" id="rpc_port" name="rpc_port" placeholder="8332" value="8332" />
 			</fieldset>		
 			<fieldset>
-				<label for="bs_user">Username</label>
-				<input type="text" id="bs_user" name="bs_user" placeholder="Your Username..." value="azoff" />
+				<label for="rpc_user">Username</label>
+				<input type="text" id="rpc_user" name="rpc_user" placeholder="Your Username..." value="azoff" />
 			</fieldset>
 			<fieldset>
-				<label for="bs_pass">Password</label>
-				<input type="password" id="bs_pass" name="bs_pass" placeholder="Your Password..." value="az1340" />
+				<label for="rpc_pass">Password</label>
+				<input type="password" id="rpc_pass" name="rpc_pass" placeholder="Your Password..." value="az1340" />
 			</fieldset>
 
 			<header>Your Mt.Gox Credentials</header>
@@ -53,26 +53,37 @@
 		<section id="exchange" class="panel">
 			<header>Mt. Gox Exchange</header>
 			<div class="ticker">
-				<span class="ticker-label">&nbsp;BUY</span>
-				<span id="ticker_buy" class="ticker-value">
+				<span class="ticker-label">&nbsp;BUY</span><span id="ticker_buy" class="ticker-value">
 					<strong>--</strong> USD
 				</span>
 			</div>
 			<div class="ticker">
-				<span class="ticker-label">SELL</span>
-				<span id="ticker_sell" class="ticker-value">
+				<span class="ticker-label">SELL</span><span id="ticker_sell" class="ticker-value">
 					<strong>--</strong> USD
 				</span>
 			</div>
 			<div class="ticker">
-				<span class="ticker-label">&nbsp;VOL</span>
-				<span id="ticker_vol" class="ticker-value">
+				<span class="ticker-label">&nbsp;VOL</span><span id="ticker_vol" class="ticker-value">
 					<strong>--</strong> BTC
 				</span>
-			</div>			
+			</div>
+			<header>Investable Funds</header>
+			<div class="funds">
+				<div id="fund_usd" class="fund">
+					<small>USD</small>
+					<span>&nbsp;Balance (Q): <strong class="balance">--</strong> USD&nbsp;</span>
+					<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Buys: <strong class="potential buy-potential">--</strong> BTC&nbsp;</span>
+				</div>			
+				<div id="fund_btc" class="fund">
+					<small>BTC</small>
+					<span>&nbsp;Balance (Q): <strong class="balance">--</strong> BTC&nbsp;</span>
+					<span>&nbsp;&nbsp;&nbsp;&nbsp;Sells At: <strong class="potential sell-potential">--</strong> USD&nbsp;</span>
+				</div>				
+			</div>		
 		</section>
 		<section id="wallet" class="panel">
-			<header>Your Wallet</header>
+			<header>Wallet Receiving Accounts</header>
+			<div class="accounts"></div>
 		</section>		
 		<script>head.js(
 			"http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js",

@@ -53,7 +53,6 @@ class JSONRPCException(Exception):
 
 class AuthServiceProxy(object):
 	def __init__(self, serviceURL, serviceName=None):
-		logging.error(serviceURL)
 		self.__serviceURL = serviceURL
 		self.__serviceName = serviceName
 		self.__url = urlparse.urlparse(serviceURL)
