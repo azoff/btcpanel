@@ -11,6 +11,8 @@ input[type=text], input[type=password] { display: block; border: none 0; color: 
 .fund span { display: block; background-color: #555; }
 .fund small { display: block; background-color: #333; padding-left: 0.5em; }
 
+#settings { margin: 0.8em 0 0 0.8em; }
+
 #wallet header, #exchange header { margin-bottom: 0.5em; }
 
 #exchange .ticker { font: 1.4em Courier, Mono; padding: 0 0.5em; }

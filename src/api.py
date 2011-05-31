@@ -48,13 +48,13 @@ class ApiRequestHandler(webapp.RequestHandler):
 			mgFunds = MtGoxAccount(mgUser, mgPass).getFunds()
 			if ('error' in mgFunds):
 				logging.error(mgFunds['error'])
-				self.respond({ 'error': 'Login Rejected: Mt. Gox Servers.' })
+				self.respond({ 'error': 'Login Failed: Mt. Gox Exchange.' })
 			else:
 				proxy = BitcoinRpcProxy(rpcUser, rpcPass, rpcHost, rpcPort)
-				rpcAccounts = proxy.listAccounts() 
+				rpcAccounts = proxy.getAccountData() 
 				if ('error' in rpcAccounts):
 					logging.error(rpcAccounts['error'])
-					self.respond({ 'error': 'Login Rejected: RPC Server.' })
+					self.respond({ 'error': 'Login Failed: Wallet RPC Server.' })
 				else:
 					self.respond({
 						'accounts': {

@@ -12,14 +12,21 @@
 		<script src='/static/js/head.min.js'></script>
     </head>
     <body>
-		<section id="status"></section>
+		<section id="status" class="notice">Please Log In.</section>
+		<form id="settings">			
+			<strong>Settings:</strong>
+			<input type="checkbox" name="save_creds" id="save_creds" value="1" />
+			<label for="save_creds">Save Credentials</label>
+			<input type="checkbox" name="auto_login" id="auto_login" value="1" />
+			<label for="auto_login">Auto Login</label>		
+		</form>
 		<form id="login" class="panel">
-			
+	
 			<header>Your Bitcoin RPC Server</header>
 			<a href="https://en.bitcoin.it/wiki/API_reference_(JSON-RPC)">Bitcoin Server Documentation</a>
 			<fieldset>
 				<label for="rpc_host">RPC Hostname</label>
-				<input type="text" id="rpc_host" name="rpc_host" placeholder="my-server.com" value="127.0.0.1" />
+				<input type="text" id="rpc_host" name="rpc_host" placeholder="my-server.com" />
 			</fieldset>	
 			<fieldset>
 				<label for="rpc_host">RPC Port</label>
@@ -27,22 +34,22 @@
 			</fieldset>		
 			<fieldset>
 				<label for="rpc_user">Username</label>
-				<input type="text" id="rpc_user" name="rpc_user" placeholder="Your Username..." value="azoff" />
+				<input type="text" id="rpc_user" name="rpc_user" placeholder="Your Username..." />
 			</fieldset>
 			<fieldset>
 				<label for="rpc_pass">Password</label>
-				<input type="password" id="rpc_pass" name="rpc_pass" placeholder="Your Password..." value="az1340" />
+				<input type="password" id="rpc_pass" name="rpc_pass" placeholder="Your Password..." />
 			</fieldset>
 
 			<header>Your Mt.Gox Credentials</header>
 			<a href="https://mtgox.com/">Mt.Gox Homepage</a>
 			<fieldset>
 				<label for="mg_user">Username</label>
-				<input type="text" id="mg_user" name="mg_user" placeholder="Your Username..." value="azoff" />
+				<input type="text" id="mg_user" name="mg_user" placeholder="Your Username..." />
 			</fieldset>
 			<fieldset>
 				<label for="mg_user">Password</label>
-				<input type="password" id="mg_pass" name="mg_pass" placeholder="Your Password..." value="win4EVER!" />
+				<input type="password" id="mg_pass" name="mg_pass" placeholder="Your Password..." />
 			</fieldset>
 			
 			<fieldset>
@@ -92,6 +99,8 @@
 		</section>		
 		<script>head.js(
 			"http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js",
+			"/static/js/store.js",
+			"/static/js/jquery.formstate.js",
 			"/static/js/index.js"
 		);</script>
     </body>

@@ -8,7 +8,7 @@ class BitcoinRpcProxy():
 		url = "http://%s:%s@%s:%s" % (username, password, hostname, port)
 		self.proxy = ServiceProxy(url)
 		
-	def listAccounts(self):
+	def getAccountData(self):
 		accounts = self.proxy.listaccounts()
 		if 'error' in accounts:
 			return accounts
@@ -18,8 +18,9 @@ class BitcoinRpcProxy():
 			for accountName in accountNames:
 				response.append({
 					'label': accountName,
-					'balance': self._toFloat(accounts[accountName]) 
+					'balance': self._toFloat(accounts[accountName])
 				})
+
 			return response
 			
 	#TODO: Analyze the risks of using floats

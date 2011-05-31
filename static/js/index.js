@@ -101,6 +101,9 @@
 	
 	function applySession(status) {
 		if (!status.error) {
+			if (find('#save_creds').prop('checked')) {
+				find('#login').saveFormState();
+			}
 			updateStatus('success', 'Connection Successful');
 			togglePanels('#wallet, #exchange');
 			applyRPC(status.accounts.rpc);
@@ -118,13 +121,20 @@
 		event.preventDefault();
 	}
 	
+	function saveSettings() {
+		find('#settings').saveFormState();
+	}
+	
 	function attachDelegates() {
-		find('#login').submit(onLogin);
+		find('#settings').loadFormState().delegate('input', 'change', saveSettings);
+		var autoSubmit = find('#auto_login').prop('checked'),
+			saveState = find('#save_creds').prop('checked'),
+			loginForm = find('#login').submit(onLogin);
+		if (saveState) { loginForm.loadFormState(autoSubmit); }
 	}
 	
 	function onReady() {
 		attachDelegates();
-		updateStatus('notice', 'Please Log In.');
 		togglePanels('#login');
 	}
 	
