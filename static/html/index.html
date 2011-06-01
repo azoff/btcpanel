@@ -12,91 +12,101 @@
 		<script src='/static/js/head.min.js'></script>
     </head>
     <body>
-		<section id="status" class="notice">Please Log In.</section>
+		
 		<form id="settings">			
 			<strong>Settings:</strong>
-			<input type="checkbox" name="save_creds" id="save_creds" value="1" />
-			<label for="save_creds">Save Credentials</label>
+			<input type="checkbox" name="save_state" id="save_state" value="1" />
+			<label for="save_state">Save Credentials</label>
 			<input type="checkbox" name="auto_login" id="auto_login" value="1" />
 			<label for="auto_login">Auto Login</label>		
 		</form>
-		<form id="login" class="panel">
-	
-			<header>Your Bitcoin RPC Server</header>
-			<a href="https://en.bitcoin.it/wiki/API_reference_(JSON-RPC)">Bitcoin Server Documentation</a>
-			<fieldset>
-				<label for="rpc_host">RPC Hostname</label>
-				<input type="text" id="rpc_host" name="rpc_host" placeholder="my-server.com" />
-			</fieldset>	
-			<fieldset>
-				<label for="rpc_host">RPC Port</label>
-				<input type="text" id="rpc_port" name="rpc_port" placeholder="8332" value="8332" />
-			</fieldset>		
-			<fieldset>
-				<label for="rpc_user">Username</label>
-				<input type="text" id="rpc_user" name="rpc_user" placeholder="Your Username..." />
-			</fieldset>
-			<fieldset>
-				<label for="rpc_pass">Password</label>
-				<input type="password" id="rpc_pass" name="rpc_pass" placeholder="Your Password..." />
-			</fieldset>
-
-			<header>Your Mt.Gox Credentials</header>
-			<a href="https://mtgox.com/">Mt.Gox Homepage</a>
-			<fieldset>
-				<label for="mg_user">Username</label>
-				<input type="text" id="mg_user" name="mg_user" placeholder="Your Username..." />
-			</fieldset>
-			<fieldset>
-				<label for="mg_user">Password</label>
-				<input type="password" id="mg_pass" name="mg_pass" placeholder="Your Password..." />
-			</fieldset>
-			
-			<fieldset>
-				<input type="submit" value="Log In" />
-			</fieldset>
-			
-		</form>
-		<section id="exchange" class="panel">
-			<header>Mt. Gox Exchange</header>
-			<div class="ticker">
-				<span class="ticker-label">&nbsp;BUY</span><span id="ticker_buy" class="ticker-value"><strong>--</strong> USD
-				</span>
-			</div>
-			<div class="ticker">
-				<span class="ticker-label">SELL</span><span id="ticker_sell" class="ticker-value"><strong>--</strong> USD
-				</span>
-			</div>
-			<div class="ticker">
-				<span class="ticker-label">HIGH</span><span id="ticker_high" class="ticker-value"><strong>--</strong> USD
-				</span>
-			</div>
-			<div class="ticker">
-				<span class="ticker-label">&nbsp;LOW</span><span id="ticker_low" class="ticker-value"><strong>--</strong> USD
-				</span>
-			</div>						
-			<div class="ticker">
-				<span class="ticker-label">&nbsp;VOL</span><span id="ticker_vol" class="ticker-value"><strong>--</strong> BTC
-				</span>
-			</div>
-			<header>Investable Funds</header>
-			<div class="funds">
-				<div id="fund_usd" class="fund">
-					<small>USD</small>
-					<span>&nbsp;Balance (Q): <strong class="balance">--</strong> USD&nbsp;</span>
-					<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Buys: <strong class="potential buy-potential">--</strong> BTC&nbsp;</span>
-				</div>			
-				<div id="fund_btc" class="fund">
-					<small>BTC</small>
-					<span>&nbsp;Balance (Q): <strong class="balance">--</strong> BTC&nbsp;</span>
-					<span>&nbsp;&nbsp;&nbsp;&nbsp;Sells At: <strong class="potential sell-potential">--</strong> USD&nbsp;</span>
-				</div>				
-			</div>		
+		
+		<section id="mtg" class="panel inactive">
+			<header>Mt. Gox Exchange <span class="status"></span></header>
+			<span class="status">Status: <strong class="status-msg notice">Logged Out.</strong></span>
+			<form class="active">
+				<header>Investable Funds</header>
+				<div class="ticker">
+					<span class="ticker-label">&nbsp;BUY</span><span class="ticker_buy ticker-value"><strong>--</strong> USD
+					</span>
+				</div>
+				<div class="ticker">
+					<span class="ticker-label">SELL</span><span class="ticker_sell ticker-value"><strong>--</strong> USD
+					</span>
+				</div>
+				<div class="ticker">
+					<span class="ticker-label">HIGH</span><span class="ticker_high ticker-value"><strong>--</strong> USD
+					</span>
+				</div>
+				<div class="ticker">
+					<span class="ticker-label">&nbsp;LOW</span><span class="ticker_low ticker-value"><strong>--</strong> USD
+					</span>
+				</div>						
+				<div class="ticker">
+					<span class="ticker-label">&nbsp;VOL</span><span class="ticker_vol ticker-value"><strong>--</strong> BTC
+					</span>
+				</div>
+				<header>Investable Funds</header>
+				<div class="funds">
+					<div class="fund-usd fund">
+						<small>USD</small>
+						<span>&nbsp;Balance (Q): <strong class="balance">--</strong> USD&nbsp;</span>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Buys: <strong class="potential buy-potential">--</strong> BTC&nbsp;</span>
+					</div>			
+					<div class="fund-btc fund">
+						<small>BTC</small>
+						<span>&nbsp;Balance (Q): <strong class="balance">--</strong> BTC&nbsp;</span>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;Sells At: <strong class="potential sell-potential">--</strong> USD&nbsp;</span>
+					</div>				
+				</div>
+				<input type="submit" value="Log Out" />
+			</form>
+			<form id="mtg-inactive" action="/api/loadMtGoxData" class="inactive" data-handler="applyMtGoxData">
+				<fieldset>
+					<label for="mtg_user">Username</label>
+					<input type="text" id="mtg_user" name="user" placeholder="Your Username..." />
+				</fieldset>
+				<fieldset>
+					<label for="mtg_user">Password</label>
+					<input type="password" id="mtg_pass" name="pass" placeholder="Your Password..." />
+				</fieldset>
+				<fieldset>
+					<input type="submit" value="Log In" />
+				</fieldset>
+			</form>
 		</section>
-		<section id="wallet" class="panel">
-			<header>Wallet Receiving Accounts</header>
-			<div id="accounts" class="funds"></div>
-		</section>		
+		
+		<section id="rpc" class="panel inactive">
+			<header>Your Bitcoin RPC Server</header>
+			<span class="status">Status: <strong class="status-msg notice">Logged Out.</strong></span>
+			<form class="active">
+				<header>Receiving Accounts</header>
+				<div class="funds"></div>
+				<input type="submit" value="Log Out" />
+			</form>
+			<form id="rpc-inactive" action="/api/loadRpcData" class="inactive" data-handler="applyRpcData">
+				<fieldset>
+					<label for="rpc_host">RPC Hostname</label>
+					<input type="text" id="rpc_host" name="host" placeholder="my-server.com" />
+				</fieldset>	
+				<fieldset>
+					<label for="rpc_host">RPC Port</label>
+					<input type="text" id="rpc_port" name="port" placeholder="8332" value="8332" />
+				</fieldset>		
+				<fieldset>
+					<label for="rpc_user">Username</label>
+					<input type="text" id="rpc_user" name="user" placeholder="Your Username..." />
+				</fieldset>
+				<fieldset>
+					<label for="rpc_pass">Password</label>
+					<input type="password" id="rpc_pass" name="pass" placeholder="Your Password..." />
+				</fieldset>
+				<fieldset>
+					<input type="submit" value="Log In" />
+				</fieldset>
+			</form>
+		</section>
+			
 		<script>head.js(
 			"http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js",
 			"/static/js/store.js",

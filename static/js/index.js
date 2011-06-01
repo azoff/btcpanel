@@ -1,13 +1,17 @@
 /*global window, document */
 (function(global, dom, loader, $){
 
-	var jQueryCache = {};
+	var 
+	globalScope = $({}),
+	tickerInterval = 5000, 
+	handlers = {};
 	
-	function find(selector) {
-		if (!jQueryCache.hasOwnProperty(selector)) {
-			jQueryCache[selector] = $(selector);
+	function find(selector, scope) {
+		var cache = scope || globalScope;
+		if (!cache.data('selector')) {
+			cache[selector] = $(selector, scope);
 		}
-		return jQueryCache[selector];
+		return cache[selector];
 	}
 	
 	function moneyFormat(value, precision) {
@@ -15,56 +19,45 @@
 		return parseFloat(value, 10).toFixed(precision);
 	}
 	
-	function updateStatus(className, statusText) {
+	function updateStatus(scope, className, statusText) {
 		var classNames = 'notice error success working'; 
-		find('#status')
+		find('.status-msg', scope)
 			.removeClass(classNames)
 			.addClass(className)
 			.text(statusText || '');
 	}
 	
-	function togglePanels(selector) {
-		find('.panel')
-			.removeClass('active')
-			.filter(selector)
-			.addClass('active');
+	function saveSettings() {
+		find('#settings').saveFormState();
 	}
 	
-	function loadSession(data, callback) {
-		$.post('/api/session', data, callback);
-	}	
-	
-	function getSession() {
-		return (global.location.hash || '').replace('#', '');
+	function setting(id) {
+		return find('#' + id).prop('checked');
 	}
 	
-	function applyTicker(status){
-		if (!status.error) {
-			var tickers = find(".ticker-value").removeClass('bull bear'),
-				buy = moneyFormat(status.buy),
-				sell = moneyFormat(status.sell),
-				last = moneyFormat(status.last), 
-				vol = moneyFormat(status.vol, 0),
-				low = moneyFormat(status.low), 
-				high = moneyFormat(status.high),
-				className = buy > last ? 'bull' : 'bear';
-			if (buy !== last) { tickers.addClass(className); }
-			find('#ticker_buy strong').text(buy);
-			find('#ticker_sell strong').text(sell);
-			find('#ticker_high strong').text(high);
-			find('#ticker_low strong').text(low);
-			find('#ticker_vol strong').text(vol);
-		}
-	}
+	handlers.applyRpcData = function applyRpcData(section, accounts) {
+		var parent = find('.funds', section).empty();
+		$.each(accounts, function(i, account) {
+			$('<div class="fund"><small>' + account.label + '</small><span>&nbsp;Balance (Q): <strong class="balance">' + moneyFormat(account.balance) + '</strong> BTC&nbsp;</span></div>').appendTo(parent);
+		});
+	};
 	
-	function loadTicker(callback) {
-		$.post('/api/ticker', callback);
-	}
-	
-	function applyPotential(status) {
-		var potentials = find('.potential'),
-			buy = moneyFormat(status.buy),
-			sell = moneyFormat(status.sell);
+	function applyTickerData(section, ticker){
+		var tickers = find(".ticker-value", section).removeClass('bull bear'),
+			potentials = find('.potential', section),
+			buy = moneyFormat(ticker.buy),
+			sell = moneyFormat(ticker.sell),
+			last = moneyFormat(ticker.last), 
+			vol = moneyFormat(ticker.vol, 0),
+			low = moneyFormat(ticker.low), 
+			high = moneyFormat(ticker.high),
+			className = buy > last ? 'bull' : 'bear';
+		if (buy !== last) { tickers.addClass(className); }
+		find('.ticker_buy strong', section).text(buy);
+		find('.ticker_sell strong', section).text(sell);
+		find('.ticker_high strong', section).text(high);
+		find('.ticker_low strong', section).text(low);
+		find('.ticker_vol strong', section).text(vol);
 		potentials.each(function(){
 			var potential = $(this), balance = potential.data('balance');
 			if (potential.hasClass('buy-potential')) {
@@ -75,69 +68,73 @@
 		});
 	}
 	
-	function loopTicker() {
-		loadTicker(function(status){
-			applyTicker(status);
-			applyPotential(status);
-			setTimeout(loopTicker, 5000);
-		});
-	}
-	
-	function applyFunds(status) {
-		var usds = moneyFormat(status.usds), btcs = moneyFormat(status.btcs);
-		find('#fund_usd .balance').text(usds);
-		find('#fund_usd .potential').data('balance', usds);
-		find('#fund_btc .balance').text(btcs);
-		find('#fund_btc .potential').data('balance', btcs);
-	}
-	
-	function applyRPC(status) {
-		var accounts = find('#accounts').empty();
-		$.each(status, function(i, data) {
-			var account = $('<div class="fund"><small>' + data.label + '</small><span>&nbsp;Balance (Q): <strong class="balance">' + moneyFormat(data.balance) + '</strong> BTC&nbsp;</span><span>&nbsp;&nbsp;&nbsp;&nbsp;Sells At: <strong class="potential sell-potential">--</strong> USD&nbsp;</span></div>').appendTo(accounts);
-			account.find('.potential').data('balance', data.balance);
-		});
-	}
-	
-	function applySession(status) {
-		if (!status.error) {
-			if (find('#save_creds').prop('checked')) {
-				find('#login').saveFormState();
+	function loopTickers(section) {
+		$.post('/api/loadTickerData', function(status) {
+			if (status.error) {
+				updateStatus(section, 'error', status.error);
+			} else {
+				applyTickerData(section, status);
+				if (section.hasClass('active')) {
+					setTimeout(function(){ 
+						loopTickers(section); 
+					}, tickerInterval);
+				}
 			}
-			updateStatus('success', 'Connection Successful');
-			togglePanels('#wallet, #exchange');
-			applyRPC(status.accounts.rpc);
-			applyFunds(status.accounts.mg);			
-			loopTicker();
-		} else {
-			updateStatus('error', status.error);
-		}
+		});
 	}
 	
-	function onLogin(event) {
-		var data = find("#login").serialize();
-		updateStatus('working', 'Logging in, please wait...');
-		loadSession(data, applySession);
+	function applyFunds(section, data) {
+		var usds = moneyFormat(data.usds), btcs = moneyFormat(data.btcs);
+		find('.fund-usd .balance', section).text(usds);
+		find('.fund-usd .potential', section).data('balance', usds);
+		find('.fund-btc .balance', section).text(btcs);
+		find('.fund-btc .potential', section).data('balance', btcs);
+	}
+	
+	handlers.applyMtGoxData = function applyMtGoxData(section, data) {
+		applyFunds(section, data);
+		loopTickers(section);
+	};
+	
+	function deferHandler(event) {
 		event.preventDefault();
+		var form = $(this), 
+			section = form.closest('section'),
+			url = form.attr('action'),
+			data = form.serialize(),
+			handler = handlers[form.data('handler')];
+		updateStatus(section, 'working', 'Fetching account data...');
+		$.post(url, data).done(function(status){
+			if (status.error) {
+				updateStatus(section, 'error', status.error);
+			} else {
+				section.addClass('active').removeClass('inactive');
+				if (setting('save_state')) { form.saveFormState(); }
+				updateStatus(section, 'success', 'Active.');
+				handler(section, status);
+			}
+		});
 	}
 	
-	function saveSettings() {
-		find('#settings').saveFormState();
+	function deactivatePanel(event) {
+		event.preventDefault();
+		var section = $(this).closest('section');
+		updateStatus(section, 'notice', 'Logged Out.');
+		section.addClass('inactive').removeClass('active');
 	}
 	
 	function attachDelegates() {
+		// wire up settings
 		find('#settings').loadFormState().delegate('input', 'change', saveSettings);
-		var autoSubmit = find('#auto_login').prop('checked'),
-			saveState = find('#save_creds').prop('checked'),
-			loginForm = find('#login').submit(onLogin);
-		if (saveState) { loginForm.loadFormState(autoSubmit); }
+		// wire up active forms
+		find('form.active').live('submit', deactivatePanel);
+		// wire up inactive forms
+		var inactiveForms = find('form.inactive').live('submit', deferHandler);
+		if (setting('save_state')) { 
+			inactiveForms.loadFormState(setting('auto_login')); 
+		}
 	}
 	
-	function onReady() {
-		attachDelegates();
-		togglePanels('#login');
-	}
-	
-	loader.ready(onReady);
+	loader.ready(attachDelegates);
 	
 })(window, document, window.head, window.jQuery);

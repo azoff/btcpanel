@@ -1,32 +1,32 @@
 body { margin: 0; padding: 0; font: 10px Helvetica, Arial, Sans; background-color: #111; color: #FFF; }
-header { font-weight: bold; font-size: 1.5em; margin-top: 0.8em; }
+header { font-weight: bold; font-size: 1.5em; margin: 0.5em 0; }
+form { padding: 0 0.8em;}
+form header { font-size: 1.3em; color: #EEE; }
 fieldset { padding: 0; margin: 0.8em 0; border: 0; }
 input[type=text], input[type=password] { display: block; border: none 0; color: #FFF; background-color: #333; padding: 0.3em 0.5em; width: 14em; font-size: 1.2em; }
 
-.panel { display: none; padding: 0 0.8em; }
-.panel.active { display: block; }
+.status { margin: 0; font-size: 1.2em; }
+.status-msg.error { color: red; }
+.status-msg.working { color: blue; }
+.status-msg.notice { color: yellow; }
+.status-msg.success { color: green; }
+
+#settings { margin: 0.8em 0 0 0.8em; }
+
+.panel { padding: 0 0.8em; }
+.panel.active form.inactive { display: none; }
+.panel.inactive form.active { display: none; }
+.panel a { color: green; text-decoration: none; font-size: 1.1em; }
+.panel a:hover { text-decoration: underline; }
+.panel label { display: block; margin-left: 0.2em; font-size: 1.1em; }
+
+.ticker { font: 1.4em Courier, Mono; padding: 0 0.5em; }
+.ticker-label { padding: 0 0.5em; color: #999; background-color: #333; }
+.ticker-value { padding: 0 0.5em; }
+.ticker-value.bull { background-color: green; }
+.ticker-value.bear { background-color: red; }
 
 .funds { overflow: hidden; }
 .fund { margin: 0 0.5em 0.8em; font-size: 1.2em; font: 1.4em Courier, Mono; float: left; clear: both; }
 .fund span { display: block; background-color: #555; }
 .fund small { display: block; background-color: #333; padding-left: 0.5em; }
-
-#settings { margin: 0.8em 0 0 0.8em; }
-
-#wallet header, #exchange header { margin-bottom: 0.5em; }
-
-#exchange .ticker { font: 1.4em Courier, Mono; padding: 0 0.5em; }
-#exchange .ticker-label { padding: 0 0.5em; color: #999; background-color: #333; }
-#exchange .ticker-value { padding: 0 0.5em; }
-#exchange .ticker-value.bull { background-color: green; }
-#exchange .ticker-value.bear { background-color: red; }
-
-#status { padding: 0.5em 0.8em; font-size: 1.4em; }
-#status.error { background-color: red; color: white; }
-#status.working { background-color: blue; color: white; }
-#status.notice { background-color: yellow; color: #111; }
-#status.success { background-color: green; color: white; }
-
-#login a { color: green; text-decoration: none; font-size: 1.1em; }
-#login a:hover { text-decoration: underline; }
-#login label { display: block; margin-left: 0.2em; font-size: 1.1em; }

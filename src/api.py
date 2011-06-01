@@ -37,35 +37,27 @@ class ApiRequestHandler(webapp.RequestHandler):
 	def unknown(self):
 		self.respond({ 'error': 'Unknown method.' })
 		
-	def session(self):
-		mgUser = self.arg('mg_user')
-		mgPass = self.arg('mg_pass')
-		rpcUser = self.arg('rpc_user')
-		rpcPass = self.arg('rpc_pass')
-		rpcHost  = self.arg('rpc_host')
-		rpcPort  = self.arg('rpc_port')
-		if  len(mgUser) > 0 and len(mgPass) > 0 and len(rpcUser) > 0 and len(rpcPass) > 0 and len(rpcHost) > 0 and len(rpcPort) > 0:
-			mgFunds = MtGoxAccount(mgUser, mgPass).getFunds()
-			if ('error' in mgFunds):
-				logging.error(mgFunds['error'])
-				self.respond({ 'error': 'Login Failed: Mt. Gox Exchange.' })
-			else:
-				proxy = BitcoinRpcProxy(rpcUser, rpcPass, rpcHost, rpcPort)
-				rpcAccounts = proxy.getAccountData() 
-				if ('error' in rpcAccounts):
-					logging.error(rpcAccounts['error'])
-					self.respond({ 'error': 'Login Failed: Wallet RPC Server.' })
-				else:
-					self.respond({
-						'accounts': {
-							'rpc': rpcAccounts,
-							'mg': mgFunds
-						}
-					})
+	def loadMtGoxData(self):
+		user = self.arg('user')
+		pasw = self.arg('pass')
+		if len(pasw) > 0 and len(user) > 0:
+			self.respond(MtGoxAccount(user, pasw).getFunds())
 		else:
-			self.respond({ 'error': 'Missing one or more parameters.' })
+			self.respond({ 'error': 'Missing required parameter.' })
+		
+	def loadRpcData(self):
+		user = self.arg('user')
+		pasw = self.arg('pass')
+		host = self.arg('host')
+		port = self.arg('port')
+		if len(user) > 0 and len(pasw) > 0 and len(host) > 0 and len(port) > 0:
+			proxy = BitcoinRpcProxy(user, pasw, host, port)
+			accountData = proxy.getAccountData() 
+			self.respond(accountData)
+		else:
+			self.respond({ 'error': 'Missing one or more required parameters.' })
 
-	def ticker(self):
+	def loadTickerData(self):
 		response = MtGoxAccount().ticker()
 		if 'ticker' in response:
 			response = response['ticker']
