@@ -53,7 +53,7 @@
 						<span>&nbsp;Balance (Q): <strong class="balance">--</strong> USD&nbsp;</span>
 						<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Buys: <strong class="potential buy-potential">--</strong> BTC&nbsp;</span>
 					</div>			
-					<div class="fund-btc fund">
+					<div class="fund-btc fund last">
 						<small>BTC</small>
 						<span>&nbsp;Balance (Q): <strong class="balance">--</strong> BTC&nbsp;</span>
 						<span>&nbsp;&nbsp;&nbsp;&nbsp;Sells At: <strong class="potential sell-potential">--</strong> USD&nbsp;</span>
@@ -66,12 +66,11 @@
 						<option value="2">Sell</option>
 					</select>
 					<input type="text" placeholder="qty." name="amount" class="small" value="--" />
-					<span class="multiplier">BTC @
-						<input class="small price" placeholder="price" type="text" value="--" name="price" disabled="disabled" />
-						<input type="checkbox" class="price" title="lock to market price" name="market" checked="checked" /><span>USD,</span>
-						<strong class="multiplier-product">--</strong>
-						<span>USD total</span>
-					</span>
+					<span>BTC @</span>
+					<input class="small price" placeholder="price" type="text" value="--" name="price" disabled="disabled" />
+					<input type="checkbox" class="price" title="lock to market price" name="market" checked="checked" />
+					<span>USD</span>
+					<div class="simulation">Order Summary: <span class="simulation-order">Buy</span> for <strong class="simulation-total">--</strong> USD</div>
 				</form>
 				<form class="active">
 					<fieldset>

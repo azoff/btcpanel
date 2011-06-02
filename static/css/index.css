@@ -32,5 +32,6 @@ input[type=checkbox].price { margin: 0 0.8em 0 -1.8em; }
 
 .funds { overflow: hidden; }
 .fund { margin: 0 0.5em 0.8em; font-size: 1.2em; font: 1.4em Courier, Mono; float: left; clear: both; }
+.fund.last { margin-bottom: 0; }
 .fund span { display: block; background-color: #555; }
 .fund small { display: block; background-color: #333; padding-left: 0.5em; }
