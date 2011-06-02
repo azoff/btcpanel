@@ -24,7 +24,7 @@
 		<section id="mtg" class="panel inactive">
 			<header>Mt. Gox Exchange <span class="status"></span></header>
 			<span class="status">Status: <strong class="status-msg notice">Logged Out.</strong></span>
-			<form class="active">
+			<div class="active">
 				<header>Investable Funds</header>
 				<div class="ticker">
 					<span class="ticker-label">&nbsp;BUY</span><span class="ticker_buy ticker-value"><strong>--</strong> USD
@@ -59,8 +59,26 @@
 						<span>&nbsp;&nbsp;&nbsp;&nbsp;Sells At: <strong class="potential sell-potential">--</strong> USD&nbsp;</span>
 					</div>				
 				</div>
-				<input type="submit" value="Log Out" />
-			</form>
+				<header>Place An Order</header>
+				<form id="mtg-order" action="/api/placeMtGoxOrder" data-handler="applyMtGoxOrder">
+					<select name="type">
+						<option value="1">Buy</option>
+						<option value="2">Sell</option>
+					</select>
+					<input type="text" placeholder="qty." name="amount" class="small" value="--" />
+					<span class="multiplier">BTC @
+						<input class="small price" placeholder="price" type="text" value="--" name="price" disabled="disabled" />
+						<input type="checkbox" class="price" title="lock to market price" name="market" checked="checked" /><span>USD,</span>
+						<strong class="multiplier-product">--</strong>
+						<span>USD total</span>
+					</span>
+				</form>
+				<form class="active">
+					<fieldset>
+						<input type="submit" value="Log Out" />
+					</fieldset>
+				</form>
+			</div>
 			<form id="mtg-inactive" action="/api/loadMtGoxData" class="inactive" data-handler="applyMtGoxData">
 				<fieldset>
 					<label for="mtg_user">Username</label>

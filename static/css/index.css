@@ -3,7 +3,8 @@ header { font-weight: bold; font-size: 1.5em; margin: 0.5em 0; }
 form { padding: 0 0.8em;}
 form header { font-size: 1.3em; color: #EEE; }
 fieldset { padding: 0; margin: 0.8em 0; border: 0; }
-input[type=text], input[type=password] { display: block; border: none 0; color: #FFF; background-color: #333; padding: 0.3em 0.5em; width: 14em; font-size: 1.2em; }
+input[type=text], input[type=password] { border: none 0; color: #FFF; background-color: #333; padding: 0.3em 0.5em; width: 14em; font-size: 1.2em; }
+input[type=text].small { width: 4em; }
 
 .status { margin: 0; font-size: 1.2em; }
 .status-msg.error { color: red; }
@@ -13,9 +14,12 @@ input[type=text], input[type=password] { display: block; border: none 0; color: 
 
 #settings { margin: 0.8em 0 0 0.8em; }
 
+input[type=text].price { padding-right: 2em; }
+input[type=checkbox].price { margin: 0 0.8em 0 -1.8em; }
+
 .panel { padding: 0 0.8em; }
-.panel.active form.inactive { display: none; }
-.panel.inactive form.active { display: none; }
+.panel.active .inactive { display: none; }
+.panel.inactive .active { display: none; }
 .panel a { color: green; text-decoration: none; font-size: 1.1em; }
 .panel a:hover { text-decoration: underline; }
 .panel label { display: block; margin-left: 0.2em; font-size: 1.1em; }
