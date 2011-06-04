@@ -16,7 +16,8 @@
 	
 	function moneyFormat(value, precision) {
 		precision = precision === undefined ? 4 : precision;
-		return parseFloat(value, 10).toFixed(precision);
+		value = parseFloat(value, 10).toFixed(precision);
+		return value >= 0 ? value : -value;
 	}
 	
 	function updateStatus(scope, className, statusText) {
@@ -42,6 +43,21 @@
 		});
 	};
 	
+	function refreshOrder(section) {
+		var type      = find('.order-type', section).val() === '1' ? 'BUY' : 'SELL',
+			selector  = type === 'BUY' ? '.ticker_sell strong' : '.ticker_buy strong',
+			price     = moneyFormat(find(selector, section).text()),
+			quantity  = moneyFormat(find('.order-qty', section).val(), 0),
+			market    = find('.order-market', section).prop('checked'),
+			priceNode = find('.order-price', section), total;
+		if (market) { priceNode.val(price); }
+		else { price = priceNode.val(); }
+		total = moneyFormat(price * quantity, 2);
+		if (isNaN(total)) { total = '--'; }
+		find('.simulation-order', section).text(type);
+		find('.simulation-total', section).text(total);
+	}
+	
 	function applyTickerData(section, ticker){
 		var tickers = find(".ticker-value", section).removeClass('bull bear'),
 			potentials = find('.potential', section),
@@ -66,6 +82,7 @@
 				potential.text(moneyFormat(balance * buy));
 			}
 		});
+		refreshOrder(section);
 	}
 	
 	function loopTickers(section) {
@@ -133,6 +150,17 @@
 		if (setting('save_state')) { 
 			inactiveForms.loadFormState(setting('auto_login')); 
 		}
+		// refresh the order on order changes
+		find('.order-price, .order-qty').live('keyup', function(){
+			var section = $(this).closest('section');
+			refreshOrder(section);
+		});
+		// modify disabled on market toggle
+		find('.order-market, .order-type').live('change', function(){
+			var box = $(this), section = $(this).closest('section');
+			box.siblings('.order-price').prop('disabled', box.prop('checked'));
+			refreshOrder(section);
+		});
 	}
 	
 	loader.ready(attachDelegates);

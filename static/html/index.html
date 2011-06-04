@@ -61,16 +61,19 @@
 				</div>
 				<header>Place An Order</header>
 				<form id="mtg-order" action="/api/placeMtGoxOrder" data-handler="applyMtGoxOrder">
-					<select name="type">
+					<select class="order-type" name="type">
 						<option value="1">Buy</option>
 						<option value="2">Sell</option>
 					</select>
-					<input type="text" placeholder="qty." name="amount" class="small" value="--" />
+					<input type="text" placeholder="qty." name="amount" class="order-qty small" value="0" />
 					<span>BTC @</span>
-					<input class="small price" placeholder="price" type="text" value="--" name="price" disabled="disabled" />
-					<input type="checkbox" class="price" title="lock to market price" name="market" checked="checked" />
+					<input class="small price order-price" placeholder="price" type="text" value="--" name="price" disabled="disabled" />
+					<input type="checkbox" class="order-market price" title="lock to market price" name="market" checked="checked" />
 					<span>USD</span>
-					<div class="simulation">Order Summary: <span class="simulation-order">Buy</span> for <strong class="simulation-total">--</strong> USD</div>
+					<div class="simulation">
+						<span class="simulation-order">BUY</span> for <strong class="simulation-total">--</strong> USD
+						<input value="ORDER" type="submit" />
+					</div>
 				</form>
 				<form class="active">
 					<fieldset>
