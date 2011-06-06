@@ -17,7 +17,7 @@
 	function moneyFormat(value, precision) {
 		precision = precision === undefined ? 4 : precision;
 		value = parseFloat(value, 10).toFixed(precision);
-		return value >= 0 ? value : -value;
+		return value >= 0 ? value : NaN;
 	}
 	
 	function updateStatus(scope, className, statusText) {
@@ -36,15 +36,26 @@
 		return find('#' + id).prop('checked');
 	}
 	
+	function activateSection(section) {
+		section.addClass('active').removeClass('inactive');
+		updateStatus(section, 'success', 'Active.');
+	}
+	
+	handlers.deactivateSection = function deactivateSection(section) {
+		section.addClass('inactive').removeClass('active');
+		updateStatus(section, 'success', 'Logged Out.');
+	};
+	
 	handlers.applyRpcData = function applyRpcData(section, accounts) {
 		var parent = find('.funds', section).empty();
 		$.each(accounts, function(i, account) {
 			$('<div class="fund"><small>' + account.label + '</small><span>&nbsp;Balance (Q): <strong class="balance">' + moneyFormat(account.balance) + '</strong> BTC&nbsp;</span></div>').appendTo(parent);
 		});
+		activateSection(section);
 	};
 	
 	function refreshOrder(section) {
-		var type      = find('.order-type', section).val() === '1' ? 'BUY' : 'SELL',
+		var type      = find('.order-type', section).val().toUpperCase(),
 			selector  = type === 'BUY' ? '.ticker_sell strong' : '.ticker_buy strong',
 			price     = moneyFormat(find(selector, section).text()),
 			quantity  = moneyFormat(find('.order-qty', section).val(), 0),
@@ -53,7 +64,12 @@
 		if (market) { priceNode.val(price); }
 		else { price = priceNode.val(); }
 		total = moneyFormat(price * quantity, 2);
-		if (isNaN(total)) { total = '--'; }
+		if (isNaN(total) || total <= 0) { 
+			total = '--'; 
+			find('.order-submit').prop('disabled', true);
+		} else {
+			find('.order-submit').prop('disabled', false);
+		}
 		find('.simulation-order', section).text(type);
 		find('.simulation-total', section).text(total);
 	}
@@ -108,48 +124,75 @@
 		find('.fund-btc .potential', section).data('balance', btcs);
 	}
 	
+	function applyOrderData(section, orders) {
+		var parent = find('.orders', section);
+		if (orders && orders.length) {			
+			$.each(orders, function(i, order) {
+				var nodeList = parent.find('.orders-open').empty(),
+					orderNode = $('<div/>').addClass('order'),
+					statusClass = order.status==='1'?'pass':'fail',
+					statusText = order.status==='1'?'Active':'Insufficient Funds',
+					titleText = "Order " + order.oid,
+					detailsText = (order.type === 2 ? 'BUY' : 'SELL') + ' ' + moneyFormat(order.amount, 0) + ' BTC @ ' + moneyFormat(order.price, 4) + ' USD',
+					orderTitle = $('<div/>').addClass('order-title').text(titleText).appendTo(orderNode),
+					orderStatus = $('<div><strong></strong></div>').addClass('order-status ' + statusClass).appendTo(orderNode).find('strong').text(statusText),
+					orderDetails = $('<div/>').addClass('order-details').text(detailsText).appendTo(orderNode);
+				nodeList.append(orderNode);
+			});	
+			parent.addClass('has-orders');
+		} else {
+			parent.removeClass('has-orders');
+		}
+	}	
+	
 	handlers.applyMtGoxData = function applyMtGoxData(section, data) {
 		applyFunds(section, data);
+		applyOrderData(section, data.orders);
 		loopTickers(section);
+		activateSection(section);
 	};
 	
-	function deferHandler(event) {
+	handlers.applyMtGoxOrderResponse = function applyMtGoxOrderResponse(section, response) {
+		updateStatus(section, 'success', response.status.replace('<br>',''));
+		applyOrderData(section, response.orders);
+		applyFunds(section, response);
+		applyTickerData(section, response.ticker);
+	};
+	
+	function onFormSubmit(event) {
 		event.preventDefault();
 		var form = $(this), 
 			section = form.closest('section'),
 			url = form.attr('action'),
-			data = form.serialize(),
-			handler = handlers[form.data('handler')];
-		updateStatus(section, 'working', 'Fetching account data...');
-		$.post(url, data).done(function(status){
-			if (status.error) {
-				updateStatus(section, 'error', status.error);
-			} else {
-				section.addClass('active').removeClass('inactive');
-				if (setting('save_state')) { form.saveFormState(); }
-				updateStatus(section, 'success', 'Active.');
-				handler(section, status);
-			}
-		});
-	}
-	
-	function deactivatePanel(event) {
-		event.preventDefault();
-		var section = $(this).closest('section');
-		updateStatus(section, 'notice', 'Logged Out.');
-		section.addClass('inactive').removeClass('active');
+			args = form.serialize(),
+			status = form.data('status') || 'Please wait...',
+			handler = handlers[form.data('handler')],
+			union = form.data('union');
+		if (union) {
+			args = [args, find(union, section).serialize()].join('&');
+		}
+		updateStatus(section, 'working', status);
+		if (url) {
+			$.post(url, args).done(function(status){
+				if (status.error) {
+					updateStatus(section, 'error', status.error);
+				} else {
+					if (setting('save_state')) { form.saveFormState(); }
+					handler(section, status);
+				}
+			});
+		} else {
+			handler(section);
+		}
 	}
 	
 	function attachDelegates() {
 		// wire up settings
 		find('#settings').loadFormState().delegate('input', 'change', saveSettings);
 		// wire up active forms
-		find('form.active').live('submit', deactivatePanel);
-		// wire up inactive forms
-		var inactiveForms = find('form.inactive').live('submit', deferHandler);
-		if (setting('save_state')) { 
-			inactiveForms.loadFormState(setting('auto_login')); 
-		}
+		var forms = find('form').live('submit', onFormSubmit);
+		if (setting('save_state')) { forms.loadFormState(); }
+		if (setting('auto_login')) { forms.filter('.inactive').trigger('submit'); }
 		// refresh the order on order changes
 		find('.order-price, .order-qty').live('keyup', function(){
 			var section = $(this).closest('section');

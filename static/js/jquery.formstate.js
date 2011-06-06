@@ -21,7 +21,7 @@
 		return this;
 	};
 	
-	$.fn.loadFormState = function(submit) {
+	$.fn.loadFormState = function() {
 		this.each(function(){
 			var form = $(this), 
 				key = form.attr('id'),
@@ -36,9 +36,6 @@
 						input.val(value);
 					}
 				});
-				if (submit) {
-					form.trigger('submit');
-				}
 			}
 		});
 		return this;

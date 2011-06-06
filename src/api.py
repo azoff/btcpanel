@@ -41,9 +41,26 @@ class ApiRequestHandler(webapp.RequestHandler):
 		user = self.arg('user')
 		pasw = self.arg('pass')
 		if len(pasw) > 0 and len(user) > 0:
-			self.respond(MtGoxAccount(user, pasw).getFunds())
+			self.respond(MtGoxAccount(user, pasw).getOrders())
 		else:
 			self.respond({ 'error': 'Missing required parameter.' })
+		
+	def placeMtGoxOrder(self):
+		user = self.arg('user')
+		pasw = self.arg('pass')
+		amount = self.arg('amount')
+		price = self.arg('price')
+		orderType = self.arg('type')
+		if len(pasw) > 0 and len(user) > 0 and len(amount) > 0 and len(price) > 0 and len(orderType) > 0:
+			if orderType == 'sell' or orderType == 'buy':
+				if (amount > 0 and price > 0):
+					self.respond(MtGoxAccount(user, pasw).placeOrder(orderType, amount, price))
+				else:
+					self.respond({ 'error': 'Quantity and price must be positve, non-zero values' })
+			else:
+				self.respond({ 'error': 'Invalid order type: %s' % orderType })
+		else:
+			self.respond({ 'error': 'Missing or empty required parameter.' })
 		
 	def loadRpcData(self):
 		user = self.arg('user')

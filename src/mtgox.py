@@ -11,6 +11,14 @@ class MtGoxAccount():
 	def getFunds(self):
 		return self._request('getFunds')
 		
+	def getOrders(self):
+		return self._request('getOrders')
+		
+	def placeOrder(self, orderType, amount, price):
+		method = "%sBTC" % orderType
+		args   = { 'amount': amount, 'price': price }
+		return self._request(method, args)
+		
 	def ticker(self):
 		return self._request('data/ticker')
 
