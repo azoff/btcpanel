@@ -33,9 +33,14 @@ input[type=checkbox].price { margin: 0 0.8em 0 -1.8em; }
 .ticker-value.bull { background-color: green; }
 .ticker-value.bear { background-color: red; }
 
-.orders { display: none; }
+.orders { display: none; overflow: hidden; }
 .orders.has-orders { display: block; }
-.orders .order {  }
+.orders .order { margin: 0 0.5em 0.8em; font-size: 1.2em; font: 1.4em Courier, Mono; float: left; clear: both; }
+.orders .order-title { display: block; background-color: #333; padding: 0 0.5em; font-size: smaller; }
+.orders .order-status { padding: 0 0.5em; }
+.orders .order-status.pass { background-color: green; }
+.orders .order-status.fail { background-color: red; }
+.orders .order-details { display: block; background-color: #555; padding: 0 0.5em; }
 
 .funds { overflow: hidden; }
 .fund { margin: 0 0.5em 0.8em; font-size: 1.2em; font: 1.4em Courier, Mono; float: left; clear: both; }
