@@ -14,6 +14,12 @@
 		return cache[selector];
 	}
 	
+	function tmpl(view, model, parent) {
+		var node = find('#tmpl-' + view).tmpl(model);
+		if (parent) { parent.append(node); }
+		return node;
+	}
+	
 	function moneyFormat(value, precision) {
 		precision = precision === undefined ? 4 : precision;
 		value = parseFloat(value, 10).toFixed(precision);
@@ -49,7 +55,8 @@
 	handlers.applyRpcData = function applyRpcData(section, accounts) {
 		var parent = find('.funds', section).empty();
 		$.each(accounts, function(i, account) {
-			$('<div class="fund"><small>' + account.label + '</small><span>&nbsp;Balance (Q): <strong class="balance">' + moneyFormat(account.balance) + '</strong> BTC&nbsp;</span></div>').appendTo(parent);
+			account.balance = moneyFormat(account.balance);
+			tmpl('fund', account, parent);
 		});
 		activateSection(section);
 	};
@@ -125,19 +132,18 @@
 	}
 	
 	function applyOrderData(section, orders) {
-		var parent = find('.orders', section);
+		var parent = find('.orders', section),
+			list = find('.orders-open', parent).empty();
 		if (orders && orders.length) {			
 			$.each(orders, function(i, order) {
-				var nodeList = parent.find('.orders-open').empty(),
-					orderNode = $('<div/>').addClass('order'),
-					statusClass = order.status==='1'?'pass':'fail',
-					statusText = order.status==='1'?'Active':'Insufficient Funds',
-					titleText = "Order " + order.oid,
-					detailsText = (order.type === 2 ? 'BUY' : 'SELL') + ' ' + moneyFormat(order.amount, 0) + ' BTC @ ' + moneyFormat(order.price, 4) + ' USD',
-					orderTitle = $('<div/>').addClass('order-title').text(titleText).appendTo(orderNode),
-					orderStatus = $('<div><strong></strong></div>').addClass('order-status ' + statusClass).appendTo(orderNode).find('strong').text(statusText),
-					orderDetails = $('<div/>').addClass('order-details').text(detailsText).appendTo(orderNode);
-				nodeList.append(orderNode);
+				tmpl('order', {
+					id: order.oid,
+					status: order.status === '1' ? 'pass' : 'fail',
+					msg: order.status === '1' ? 'Active' : 'Insufficient Funds',
+					type: order.type === 2 ? 'BUY' : 'SELL',
+					price: moneyFormat(order.price),
+					qty: moneyFormat(order.amount, 0)
+				}, list);
 			});	
 			parent.addClass('has-orders');
 		} else {

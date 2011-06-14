@@ -76,7 +76,7 @@
 					</div>
 				</form>
 				<div class="orders">
-					<header>Open Orders</header>
+					<header>Order Details</header>
 					<div class="orders-open"></div>
 				</div>
 				<form data-handler="deactivateSection">
@@ -130,9 +130,30 @@
 				</fieldset>
 			</form>
 		</section>
+		
+		<script type="text/x-jquery-tmpl" id="tmpl-fund">
+			<div class="fund">
+				<small>${label}</small>
+				<span>Balance (Q): <strong class="balance">${balance}</strong> BTC</span>
+			</div>
+		</script>
+		
+		<script type="text/x-jquery-tmpl" id="tmpl-order">
+			<form class="order" action="/api/cancelMtGoxOrder" data-handler="applyMtGoxOrderCancellation">
+				<div title="${msg}" class="order-title ${status}">
+					<span>Order #${id}</span>
+					<input name="order_id" type="hidden" value="${id}" />
+					<input class="order-cancel" type="submit" value="cancel" />
+				</div>
+				<div class="order-details">
+					${type} ${qty} BTC @ ${price} USD
+				</div>
+			</form>
+		</script>
 			
 		<script>head.js(
 			"http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js",
+			"http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js",
 			"/static/js/store.js",
 			"/static/js/jquery.formstate.js",
 			"/static/js/index.js"

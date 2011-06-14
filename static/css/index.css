@@ -36,14 +36,16 @@ input[type=checkbox].price { margin: 0 0.8em 0 -1.8em; }
 .orders { display: none; overflow: hidden; }
 .orders.has-orders { display: block; }
 .orders .order { margin: 0 0.5em 0.8em; font-size: 1.2em; font: 1.4em Courier, Mono; float: left; clear: both; }
-.orders .order-title { display: block; background-color: #333; padding: 0 0.5em; font-size: smaller; }
-.orders .order-status { padding: 0 0.5em; }
-.orders .order-status.pass { background-color: green; }
-.orders .order-status.fail { background-color: red; }
+.orders .order-title { display: block; background-color: #333; padding: 0 0.7em; font-size: smaller; overflow: hidden; }
+.orders .order-title.pass { background-color: green; }
+.orders .order-title.fail { background-color: red; }
+.orders .order-title span { line-height: 1.9em; }
+.orders .order-cancel { float: right; }
+.orders .order-title.fail .order-cancel { display: none; }
 .orders .order-details { display: block; background-color: #555; padding: 0 0.5em; }
 
 .funds { overflow: hidden; }
 .fund { margin: 0 0.5em 0.8em; font-size: 1.2em; font: 1.4em Courier, Mono; float: left; clear: both; }
 .fund.last { margin-bottom: 0; }
-.fund span { display: block; background-color: #555; }
-.fund small { display: block; background-color: #333; padding-left: 0.5em; }
+.fund span { display: block; background-color: #555; padding: 0 0.5em; }
+.fund small { display: block; background-color: #333; padding: 0 0.5em; }
